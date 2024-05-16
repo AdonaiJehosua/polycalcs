@@ -1,4 +1,4 @@
-import { Box, Input, TextField } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
 
@@ -88,7 +88,7 @@ export default function Card() {
         setOpenWidth(value)
         const newPageWidth = Number(value) / 2 - Number(parameters.kant)
         const newCoverWidth = Number(value) / 2 - Number(parameters.space / 2)
-        const newCloseWidth = Number(value) /2
+        const newCloseWidth = Number(value) / 2
         setPageWidth(newPageWidth)
         setCoverWidth(newCoverWidth)
         setCloseWidth(newCloseWidth)
@@ -107,8 +107,8 @@ export default function Card() {
     return (
         <Container>
             <Box sx={{
-                    marginBottom: 10
-                }}>Удостоверение</Box>
+                marginBottom: 10
+            }}>Удостоверение</Box>
             <TextField
                 label='Ширина страницы'
                 name='pageWidth'
