@@ -1,16 +1,18 @@
 import { Box, TextField } from '@mui/material';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
+import Paint from './Paint';
 
 const initialState = {
     pageWidth: 97,
-    pageHight: 59,
+    pageHeight: 59,
     coverWidth: 95,
-    coverHight: 65,
+    coverHeight: 65,
     closeWidth: 100,
-    closeHight: 65,
+    closeHeight: 65,
     openWidth: 200,
-    openHight: 65
+    openHeight: 65,
+    hoveredElement: null
 }
 
 const parameters = {
@@ -22,16 +24,21 @@ const parameters = {
 
 export default function Card() {
     const [pageWidth, setPageWidth] = useState(initialState.pageWidth);
-    const [pageHight, setPageHight] = useState(initialState.pageHight);
+    const [pageHeight, setPageHeight] = useState(initialState.pageHeight);
     const [coverWidth, setCoverWidth] = useState(initialState.coverWidth);
-    const [coverHight, setCoverHight] = useState(initialState.coverHight);
+    const [coverHeight, setCoverHeight] = useState(initialState.coverHeight);
     const [closeWidth, setCloseWidth] = useState(initialState.closeWidth);
-    const [closeHight, setCloseHight] = useState(initialState.closeHight);
+    const [closeHeight, setCloseHeight] = useState(initialState.closeHeight);
     const [openWidth, setOpenWidth] = useState(initialState.openWidth);
-    const [openHight, setOpenHight] = useState(initialState.openHight);
+    const [openHeight, setOpenHeight] = useState(initialState.openHeight);
+
+    const [dimensions, setDimensions] = useState(initialState)
+
+    const [hoveredElement, setHoveredElement] = useState(initialState.hoveredElement)
+    const [hoveredElemDimensions, setHoveredElemDimensions] = useState({width: coverWidth, height: coverHeight})
 
     function changePageWidth(value) {
-        setPageWidth(value)
+        setDimensions({...dimensions, pageWidth: value})
         const newCoverWidth = Number(value) + Number(parameters.kant) - Number(parameters.space / 2)
         const newCloseWidth = Number(value) + Number(parameters.kant)
         const newOpenWidth = (Number(value) + Number(parameters.kant)) * 2
@@ -39,14 +46,14 @@ export default function Card() {
         setCloseWidth(newCloseWidth)
         setOpenWidth(newOpenWidth)
     }
-    function changePageHight(value) {
-        setPageHight(value)
-        const newCoverHight = Number(value) + Number(parameters.kant) * 2
-        const newCloseHight = Number(value) + Number(parameters.kant) * 2
-        const newOpenHight = Number(value) + Number(parameters.kant) * 2
-        setCoverHight(newCoverHight)
-        setCloseHight(newCloseHight)
-        setOpenHight(newOpenHight)
+    function changePageHeight(value) {
+        setPageHeight(value)
+        const newCoverHeight = Number(value) + Number(parameters.kant) * 2
+        const newCloseHeight = Number(value) + Number(parameters.kant) * 2
+        const newOpenHeight = Number(value) + Number(parameters.kant) * 2
+        setCoverHeight(newCoverHeight)
+        setCloseHeight(newCloseHeight)
+        setOpenHeight(newOpenHeight)
     }
     function changeCoverWidth(value) {
         setCoverWidth(value)
@@ -57,14 +64,14 @@ export default function Card() {
         setCloseWidth(newCloseWidth)
         setOpenWidth(newOpenWidth)
     }
-    function changeCoverHight(value) {
-        setCoverHight(value)
-        const newPageHight = Number(value) - Number(parameters.kant) * 2
-        const newCloseHight = value
-        const newOpenHight = value
-        setPageHight(newPageHight)
-        setCloseHight(newCloseHight)
-        setOpenHight(newOpenHight)
+    function changeCoverHeight(value) {
+        setCoverHeight(value)
+        const newPageHeight = Number(value) - Number(parameters.kant) * 2
+        const newCloseHeight = value
+        const newOpenHeight = value
+        setPageHeight(newPageHeight)
+        setCloseHeight(newCloseHeight)
+        setOpenHeight(newOpenHeight)
     }
     function changeCloseWidth(value) {
         setCloseWidth(value)
@@ -75,14 +82,14 @@ export default function Card() {
         setCoverWidth(newCoverWidth)
         setOpenWidth(newOpenWidth)
     }
-    function changeCloseHight(value) {
-        setCloseHight(value)
-        const newPageHight = Number(value) - Number(parameters.kant * 2)
-        const newCoverHight = value
-        const newOpenHight = value
-        setPageHight(newPageHight)
-        setCoverHight(newCoverHight)
-        setOpenHight(newOpenHight)
+    function changeCloseHeight(value) {
+        setCloseHeight(value)
+        const newPageHeight = Number(value) - Number(parameters.kant * 2)
+        const newCoverHeight = value
+        const newOpenHeight = value
+        setPageHeight(newPageHeight)
+        setCoverHeight(newCoverHeight)
+        setOpenHeight(newOpenHeight)
     }
     function changeOpenWidth(value) {
         setOpenWidth(value)
@@ -93,14 +100,23 @@ export default function Card() {
         setCoverWidth(newCoverWidth)
         setCloseWidth(newCloseWidth)
     }
-    function changeOpenHight(value) {
-        setOpenHight(value)
-        const newPageHight = Number(value) - Number(parameters.kant * 2)
-        const newCoverHight = value
-        const newCloseHight = value
-        setPageHight(newPageHight)
-        setCoverHight(newCoverHight)
-        setCloseHight(newCloseHight)
+    function changeOpenHeight(value) {
+        setOpenHeight(value)
+        const newPageHeight = Number(value) - Number(parameters.kant * 2)
+        const newCoverHeight = value
+        const newCloseHeight = value
+        setPageHeight(newPageHeight)
+        setCoverHeight(newCoverHeight)
+        setCloseHeight(newCloseHeight)
+    }
+
+    function hoverElem({elem}) {
+        console.log(elem)
+        setHoveredElement(elem)
+        setHoveredElemDimensions({
+            width: dimensions[elem + 'Width'],
+            height: dimensions[elem + 'Height']
+        })
     }
 
 
@@ -112,30 +128,51 @@ export default function Card() {
             <TextField
                 label='Ширина страницы'
                 name='pageWidth'
+                inputProps={{
+                    'data-dim': 'width',
+                    'data-elem': 'page'
+                }}
+                
                 type='number'
-                value={pageWidth}
+                value={dimensions.pageWidth}
                 onChange={(evt) => changePageWidth(evt.target.value)}
+                onMouseMove={(evt) => {hoverElem(evt.target.dataset)}}
             />
             <TextField
                 label='Высота страницы'
-                name='pageHight'
+                name='pageHeight'
+                inputProps={{
+                    'data-dim': 'height',
+                    'data-elem': 'page'
+                }}
                 type='number'
-                value={pageHight}
-                onChange={(evt) => changePageHight(evt.target.value)}
+                value={pageHeight}
+                onChange={(evt) => changePageHeight(evt.target.value)}
+                onMouseMove={(evt) => {hoverElem(evt.target.dataset)}}
             />
             <TextField
                 label='Ширина сторонки'
                 name='coverWidth'
+                inputProps={{
+                    'data-dim': 'width',
+                    'data-elem': 'cover'
+                }}
                 type='number'
                 value={coverWidth}
                 onChange={(evt) => changeCoverWidth(evt.target.value)}
+                onMouseMove={(evt) => {hoverElem(evt.target.dataset)}}
             />
             <TextField
                 label='Высота сторонки'
-                name='coverHight'
+                name='coverHeight'
+                inputProps={{
+                    'data-dim': 'height',
+                    'data-elem': 'cover'
+                }}
                 type='number'
-                value={coverHight}
-                onChange={(evt) => changeCoverHight(evt.target.value)}
+                value={coverHeight}
+                onChange={(evt) => changeCoverHeight(evt.target.value)}
+                onMouseMove={(evt) => {hoverElem(evt.target.dataset)}}
             />
             <TextField
                 label='Ширина закрытого'
@@ -143,13 +180,15 @@ export default function Card() {
                 type='number'
                 value={closeWidth}
                 onChange={(evt) => changeCloseWidth(evt.target.value)}
+                onMouseMove={() => {setHoveredElement('close')}}
             />
             <TextField
                 label='Высота закрытого'
-                name='closeHight'
+                name='closeHeight'
                 type='number'
-                value={closeHight}
-                onChange={(evt) => changeCloseHight(evt.target.value)}
+                value={closeHeight}
+                onChange={(evt) => changeCloseHeight(evt.target.value)}
+                onMouseMove={() => {setHoveredElement('close')}}
             />
             <TextField
                 label='Ширина открытого'
@@ -157,14 +196,18 @@ export default function Card() {
                 type='number'
                 value={openWidth}
                 onChange={(evt) => changeOpenWidth(evt.target.value)}
+                onMouseMove={() => {setHoveredElement('open')}}
             />
             <TextField
                 label='Высота открытого'
-                name='openHight'
+                name='openHeight'
                 type='number'
-                value={openHight}
-                onChange={(evt) => changeOpenHight(evt.target.value)}
+                value={openHeight}
+                onChange={(evt) => changeOpenHeight(evt.target.value)}
+                onMouseMove={() => {setHoveredElement('open')}}
             />
+
+            <Paint isBlur={true} hoveredElement={hoveredElement} dimensions={hoveredElemDimensions}/>
         </Container>
     )
 };
